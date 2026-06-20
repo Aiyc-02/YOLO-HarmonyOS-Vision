@@ -33,10 +33,11 @@ Markdown
 ```bash
 yolo export model=yolov26n.pt format=onnx imgsz=640 simplify=True
 ```
-3. 转换为鸿蒙端侧格式 (.ms)
+### 3. 转换为鸿蒙端侧格式 (.ms)
 此步骤需使用华为官方提供的 MindSpore Lite Converter（离线模型转换工具），将 ONNX 算子映射为端侧底层的高性能算子。
 
-工具下载地址:https://www.mindspore.cn/lite/docs/zh-CN/master/use/downloads.html(本文下载的是mindspore-lite-2.9.0-linux-x64，在Windows系统下转换时没有成功，在Ubantu22.04系统上进行转换的)
+工具下载地址:https://www.mindspore.cn/lite/docs/zh-CN/master/use/downloads.html
+(本文下载的是mindspore-lite-2.9.0-linux-x64，在Windows系统下转换时没有成功，在Ubantu22.04系统上进行转换的)
 
 转换指南参考：https://www.mindspore.cn/lite/docs/zh-CN/master/converter/converter_tool.html
 
