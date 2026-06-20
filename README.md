@@ -1,3 +1,4 @@
+Markdown
 # YOLO-HarmonyOS-Vision: 基于 ArkTS 的端侧目标检测部署探索
 
 本项目记录了在 HarmonyOS NEXT 系统下，尝试使用纯 ArkTS 语言结合 MindSpore Lite 框架，将轻量级 YOLO 目标检测模型部署到移动端侧的开发过程与阶段性成果。
@@ -28,5 +29,44 @@
 
 ### 2. 导出为中间件格式 (.onnx)
 利用 Ultralytics 自带的导出功能，将 PyTorch 模型转化为通用的 ONNX 结构。在 Python 环境中执行以下命令（建议开启 `simplify` 消除冗余算子）：
+
 ```bash
-yolo export model=yolov8n.pt format=onnx imgsz=640 simplify=True
+yolo export model=yolov26n.pt format=onnx imgsz=640 simplify=True
+```
+3. 转换为鸿蒙端侧格式 (.ms)
+此步骤需使用华为官方提供的 MindSpore Lite Converter（离线模型转换工具），将 ONNX 算子映射为端侧底层的高性能算子。
+
+工具下载地址：MindSpore Lite 下载中心（选择与你电脑系统匹配的版本）
+
+转换指南参考：推理模型转换教程
+
+基本转换命令示例：
+
+Bash
+# 将解压后的 converter 工具加入环境变量后执行：
+```bash
+converter_lite --modelFile=yolov26n.onnx --fmk=ONNX --outputFile=yolo26n --targetDevice=CPU
+```
+注：转换完成后，只需将生成的 yolo26n.ms 放入本工程的 entry/src/main/resources/rawfile/ 目录下即可被代码自动读取。
+
+🛠️ 开发与测试环境设置
+1. IDE 与 SDK 环境
+开发工具: HUAWEI DevEco Studio
+
+建议版本: 4.0 Release / NEXT Developer Preview 及以上版本
+
+工具下载地址: DevEco Studio 官方下载中心
+
+SDK 环境: HarmonyOS NEXT (API 11 / API 12)
+
+2. 硬件测试设备
+运行载体: 华为鸿蒙真机（因涉及底层 NPU/CPU 算力调度与 MindSpore 底层依赖，暂不支持通过电脑本地模拟器进行推理验证）。
+
+📝 后续探索方向
+本项目目前主要聚焦于底层检测链路的跑通验证，仍有待进一步探索的空间：
+
+对不同 YOLO 变体导出时产生的差异化张量输出结构（如 [1, 6, 300] 与 [1, 300, 6] 等排布方式），目前的兼容范围仍需进一步扩大测试。
+
+目前工程主要针对单帧静态图像进行检测，关于连续视频流（Camera Frame）检测时的内存开销控制与帧率表现尚未进行压力验证。
+
+欢迎感兴趣的开发者参考代码，交流探讨或提出改进建议。
