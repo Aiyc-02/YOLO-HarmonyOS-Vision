@@ -44,7 +44,7 @@ yolo export model=yolov26n.pt format=onnx imgsz=640 simplify=True
 基本转换命令示例：
 
 Bash
-将解压后的 converter 工具加入环境变量后执行：
+#### 将解压后的 converter 工具加入环境变量后执行：
 ```bash
 converter_lite --modelFile=yolov26n.onnx --fmk=ONNX --outputFile=yolo26n --targetDevice=CPU
 ```
