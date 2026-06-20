@@ -1,61 +1,39 @@
-# 🎯 YOLO-HarmonyOS-Vision
+# YOLO-HarmonyOS-Vision: 基于 ArkTS 的端侧目标检测部署探索
 
-🚀 **纯原生、零 C++ 依赖、极度流畅的鸿蒙端侧 YOLO 目标检测引擎。**
+本项目记录了在 HarmonyOS NEXT 系统下，尝试使用纯 ArkTS 语言结合 MindSpore Lite 框架，将轻量级 YOLO 目标检测模型部署到移动端侧的开发过程与阶段性成果。
 
-基于 HarmonyOS NEXT (API 11/12) 的 ArkTS 语言与 MindSpore Lite 端侧推理框架，徒手实现张量解析、动态坐标归一化与按类别的非极大值抑制（Class-Specific NMS）。让你在鸿蒙手机上体验 60 帧丝滑的离线 AI 视觉。
+## 📌 项目背景与尝试
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![HarmonyOS](https://img.shields.io/badge/HarmonyOS-NEXT-green)
-![MindSpore](https://img.shields.io/badge/MindSpore-Lite-purple)
+目前关于 HarmonyOS 端侧部署视觉模型的开源实践相对较少。本项目跳过了常见的 C++ (NAPI) 底层封装路线，尝试直接调用鸿蒙原生的 `@kit.MindSporeLiteKit` 接口，以期验证纯原生链路在端侧 AI 图像推理上的工程可行性。
 
----
+## 📊 阶段性取得的成果
 
-## ✨ 核心亮点
+经过基础的底层调试与逻辑重构，目前工程初步实现了以下验证：
 
-与传统的“C++ 底层封包”或“云端 API 调用”方案不同，本项目主打 **“纯血原生与极致自适应”**：
+* **原生推理链路打通**：成功利用 MindSpore Lite 离线加载 `.ms` 模型，在真机环境下完成了图像的前向推理。
+* **张量数据解析与坐标映射**：实现了对模型输出多维张量的结构解析，处理了坐标归一化及边界裁剪，并完成了从特征图映射到设备物理屏幕宽高的自适应对齐。
+* **按类别非极大值抑制 (Class-Specific NMS)**：为解决多目标识别中的重叠问题，编写了基础的按类别独立 NMS 算法，初步改善了异类物体的误抑制现象。
+* **交互逻辑层优化**：对推理结果引入了预缓存机制。通过界面滑块动态调节置信度阈值时，直接基于内存缓存进行数据过滤与 Canvas 重绘，避免了重复调用底层模型带来的算力消耗。
 
-- **🧠 纯 ArkTS 端侧推理**：彻底抛弃笨重的 C++ (NAPI) 胶水代码，使用鸿蒙原生 `@kit.MindSporeLiteKit` 直接加载 `.ms` 模型进行本地推理，拒绝内存泄漏。
-- **🛡️ 智能张量解析 (Smart Tensor Parsing)**：自动探测模型输出的 Shape（兼容 `[1, 6, 300]` 与 `[1, 300, 6]` 等不同导出的 YOLO 变体），告别坐标乱码。
-- **⚔️ 工业级 Class-Specific NMS**：独立手搓按类别的非极大值抑制算法，完美解决不同类别物体（如“人”和“背包”）重叠时的互相误杀。
-- **📱 绝对坐标自适应**：不论是横屏全景还是竖屏长图，通过动态监听渲染面积（`onAreaChange`），确保检测框在任何尺寸、任何比例的设备上都严丝合缝地咬住物体。
-- **🎛️ 实时置信度过滤**：创新的“预缓存”架构！拖动 UI 滑块调节检测严苛度时，无需重新唤醒 AI 推理，实现 0 延迟的瞬间画面重绘。
-- **💎 玻璃拟态 UI (Glassmorphism)**：使用鸿蒙原生 `backdropBlur` 打造深色高级磨砂面板，体验极其优雅。
+## 🛠️ 测试环境与运行方法
 
----
+### 1. 软硬件基础
+* **IDE**: DevEco Studio (建议 4.0 Release 及以上)
+* **SDK 环境**: HarmonyOS NEXT (API 11 / API 12)
+* **测试设备**: 华为鸿蒙真机（涉及 NPU/CPU 算力调度，暂不支持模拟器测试）
 
-## 🛠️ 快速开始
+### 2. 模型导入
+本项目默认代码中读取的模型文件为 `yolo26n.ms`。
+* 需自行准备训练好并转换为 MindSpore Lite 格式的 `.ms` 模型文件。
+* 将其放置于项目的 `entry/src/main/resources/rawfile/` 目录下。
 
-### 1. 环境要求
-- **IDE**: DevEco Studio (推荐 4.0 Release 及以上)
-- **SDK**: HarmonyOS NEXT (API 11 / API 12)
-- **设备**: 华为鸿蒙真机（因涉及 NPU/CPU 底层推理，不建议使用模拟器）
+### 3. 工程运行
+使用 DevEco Studio 直接编译运行即可。图像输入环节借助了原生 `cameraPicker` 和 `photoAccessHelper` 接口完成进程外调用，工程本身无需声明相机或图库相关的敏感隐私权限。
 
-### 2. 模型准备
-本项目默认读取 `yolo26n.ms` 模型。
-1. 请确保你已经将训练或转换好的 MindSpore Lite 模型（`.ms` 格式）重命名为 `yolo26n.ms`。
-2. 将该文件放入项目的 `entry/src/main/resources/rawfile/` 目录下。
+## 📝 后续探索方向
 
-### 3. 编译运行
-在 DevEco Studio 中打开项目，直接点击 `Run` 部署到你的鸿蒙设备上即可。由于使用了纯原生的 `photoAccessHelper` 和 `cameraPicker`，**本项目无需申请任何高危相机/图库权限即可安全运行**。
+本项目目前仅作为端侧部署流程的技术验证 Demo，主要聚焦于底层逻辑的跑通，仍有待进一步优化的空间：
+1.  对不同 YOLO 变体（如 YOLOv8, YOLO11 等）导出时产生的差异化张量输出结构，目前的兼容性仍需进一步扩大测试。
+2.  目前工程主要针对单帧静态图像进行检测，关于连续视频流检测时的内存开销控制与帧率表现尚未进行压力验证。
 
----
-
-## ⚙️ 核心逻辑解析 (对于想学习的开发者)
-
-本项目最值得参考的逻辑集中在 `Index.ets` 中的张量解析阶段：
-
-1. **为什么不需要申请相机权限？**
-   摒弃了底层的 `CameraSession` 数据流流转，采用安全极简的 `cameraPicker.pick()` 唤起系统独立进程拍照，杜绝了底层缓冲池卡死黑屏的风险。
-   
-2. **为什么滑动过滤如此流畅？**
-   在 `extractAndCacheBoxes` 阶段，将所有低阈值（>10%）的候选原始框提取到内存数组 `cachedRawBoxes` 中。当用户滑动 UI 的 `confidenceThreshold` 时，直接操作缓存数组进行 NMS 过滤和 Canvas 重绘。
-
----
-
-## 🤝 贡献与参与
-
-这可能是全网最早一批采用全 ArkTS 原生链路跑通端侧 YOLO 的开源探索。如果你在部署其他 YOLO 变体（如 YOLOv8, YOLO11）时遇到了张量解析的问题，或者有更好的性能优化思路，欢迎提交 **Issue** 或 **Pull Request**！
-
-## 📄 协议
-
-本项目基于 **MIT License** 开源，欢迎自由使用、修改与商用。
+欢迎感兴趣的开发者参考代码，交流探讨或提出改进建议。
