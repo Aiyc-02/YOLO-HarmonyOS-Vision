@@ -44,8 +44,9 @@ yolo export model=yolov26n.pt format=onnx imgsz=640 simplify=True
 基本转换命令示例：
 
 Bash
-#### 将解压后的 converter 工具加入环境变量后执行：
+#### 将解压后的 converter 工具加入环境变量后再执行转换命令：
 ```bash
+export LD_LIBRARY_PATH=/home/rebot/1/mindspore-lite-2.9.0-linux-x64/tools/converter/lib:$LD_LIBRARY_PATH
 converter_lite --modelFile=yolov26n.onnx --fmk=ONNX --outputFile=yolo26n --targetDevice=CPU
 ```
 注：转换完成后，只需将生成的 yolo26n.ms 放入本工程的 entry/src/main/resources/rawfile/ 目录下即可被代码自动读取。
@@ -60,6 +61,7 @@ SDK 环境: HarmonyOS NEXT (API 11 / API 12)
 
 2. 硬件测试设备
 运行载体: 华为鸿蒙真机（因涉及底层 NPU/CPU 算力调度与 MindSpore 底层依赖，暂不支持通过电脑本地模拟器进行推理验证）。
+注意：手机需要更新到鸿蒙6系统！！！
 
 📝 后续探索方向
 本项目目前主要聚焦于底层检测链路的跑通验证，仍有待进一步探索的空间：
