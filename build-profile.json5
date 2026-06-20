@@ -1,0 +1,56 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\14345\\.ohos\\config\\default_yolo_pyS7vkAQ0mdhcE5t1CrqkIVtN93aUBpKXm_PRnANQ2U=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BAD718BEC64FC19D1CDDC3F83B83C5A5E2B9FF6380E473C8DBD1207E1CA20462C3FB0A5B3B17328",
+          "profile": "C:\\Users\\14345\\.ohos\\config\\default_yolo_pyS7vkAQ0mdhcE5t1CrqkIVtN93aUBpKXm_PRnANQ2U=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\14345\\.ohos\\config\\default_yolo_pyS7vkAQ0mdhcE5t1CrqkIVtN93aUBpKXm_PRnANQ2U=.p12",
+          "storePassword": "0000001B5543B8CED337BE53F3B7CE787870BBEE9AE70D8F8877B1D7FAF9110918790C2D08E767607295A9"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "targetSdkVersion": "6.1.0(23)",
+        "compatibleSdkVersion": "6.1.0(23)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}
