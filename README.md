@@ -37,14 +37,14 @@ yolo export model=yolov26n.pt format=onnx imgsz=640 simplify=True
 此步骤需使用华为官方提供的 MindSpore Lite Converter（离线模型转换工具），将 ONNX 算子映射为端侧底层的高性能算子。
 
 工具下载地址:https://www.mindspore.cn/lite/docs/zh-CN/master/use/downloads.html
-(本文下载的是mindspore-lite-2.9.0-linux-x64，在Windows系统下转换时没有成功，在Ubantu22.04系统上进行转换的)
+(本文下载的是mindspore-lite-2.9.0-linux-x64，在Windows系统下转换时没有成功，在Ubantu22.04系统上进行转换的，本项目提供了预训练的yolo26n.ms)
 
 转换指南参考：https://www.mindspore.cn/lite/docs/zh-CN/master/converter/converter_tool.html
 
 基本转换命令示例：
 
 Bash
-# 将解压后的 converter 工具加入环境变量后执行：
+将解压后的 converter 工具加入环境变量后执行：
 ```bash
 converter_lite --modelFile=yolov26n.onnx --fmk=ONNX --outputFile=yolo26n --targetDevice=CPU
 ```
@@ -52,11 +52,9 @@ converter_lite --modelFile=yolov26n.onnx --fmk=ONNX --outputFile=yolo26n --targe
 
 🛠️ 开发与测试环境设置
 1. IDE 与 SDK 环境
-开发工具: HUAWEI DevEco Studio
+开发工具: HUAWEI DevEco Studio（本文下载的版本是devecostudio-windows-6.1.0.850）
 
-建议版本: 4.0 Release / NEXT Developer Preview 及以上版本
-
-工具下载地址: DevEco Studio 官方下载中心
+工具下载地址: https://developer.huawei.com/consumer/cn/download/deveco-studio
 
 SDK 环境: HarmonyOS NEXT (API 11 / API 12)
 
