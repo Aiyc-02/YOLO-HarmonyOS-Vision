@@ -15,25 +15,18 @@
 * **按类别非极大值抑制 (Class-Specific NMS)**：为解决多目标识别中的重叠问题，编写了基础的按类别独立 NMS 算法，初步改善了异类物体的误抑制现象。
 * **交互逻辑层优化**：对推理结果引入了预缓存机制。通过界面滑块动态调节置信度阈值时，直接基于内存缓存进行数据过滤与 Canvas 重绘，避免了重复调用底层模型带来的算力消耗。
 
-## 🛠️ 测试环境与运行方法
+---
 
-### 1. 软硬件基础
-* **IDE**: DevEco Studio (建议 4.0 Release 及以上)
-* **SDK 环境**: HarmonyOS NEXT (API 11 / API 12)
-* **测试设备**: 华为鸿蒙真机（涉及 NPU/CPU 算力调度，暂不支持模拟器测试）
+## ⚙️ 模型获取与端侧格式转换路线
 
-### 2. 模型导入
-本项目默认代码中读取的模型文件为 `yolo26n.ms`。
-* 需自行准备训练好并转换为 MindSpore Lite 格式的 `.ms` 模型文件。
-* 将其放置于项目的 `entry/src/main/resources/rawfile/` 目录下。
+由于鸿蒙底层的 MindSpore 推理框架不支持直接运行 PyTorch 模型，本工程探索了从官方预训练模型到端侧 `.ms` 格式的完整转换链路。若要自行准备模型，请参考以下流程：
 
-### 3. 工程运行
-使用 DevEco Studio 直接编译运行即可。图像输入环节借助了原生 `cameraPicker` 和 `photoAccessHelper` 接口完成进程外调用，工程本身无需声明相机或图库相关的敏感隐私权限。
+### 1. 下载预训练模型 (.pt)
+* **来源**：Ultralytics 官方仓库
+* **地址**：[https://github.com/ultralytics/ultralytics](https://github.com/ultralytics/ultralytics)
+* **说明**：在该仓库的 README 或 Docs 中下载轻量级的预训练权重（推荐使用参数量极小的 `yolov8n.pt` 或类似规格的模型），也可以使用该框架自行训练得到特定场景的 `.pt` 权重。
 
-## 📝 后续探索方向
-
-本项目目前仅作为端侧部署流程的技术验证 Demo，主要聚焦于底层逻辑的跑通，仍有待进一步优化的空间：
-1.  对不同 YOLO 变体（如 YOLOv8, YOLO11 等）导出时产生的差异化张量输出结构，目前的兼容性仍需进一步扩大测试。
-2.  目前工程主要针对单帧静态图像进行检测，关于连续视频流检测时的内存开销控制与帧率表现尚未进行压力验证。
-
-欢迎感兴趣的开发者参考代码，交流探讨或提出改进建议。
+### 2. 导出为中间件格式 (.onnx)
+利用 Ultralytics 自带的导出功能，将 PyTorch 模型转化为通用的 ONNX 结构。在 Python 环境中执行以下命令（建议开启 `simplify` 消除冗余算子）：
+```bash
+yolo export model=yolov8n.pt format=onnx imgsz=640 simplify=True
