@@ -19,8 +19,8 @@ Markdown
 ## 📸 效果演示
 
 ### 识别效果
-![Detection Result](assets/camera.png)
-![Architecture](assets/bus.png)
+assets/camera.png
+assets/bus.png
 
 ## ⚙️ 模型获取与端侧格式转换路线
 
