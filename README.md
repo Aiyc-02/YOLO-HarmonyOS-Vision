@@ -25,7 +25,7 @@ Markdown
 ### 1. 下载预训练模型 (.pt)
 * **来源**：Ultralytics 官方仓库
 * **地址**：[https://github.com/ultralytics/ultralytics](https://github.com/ultralytics/ultralytics)
-* **说明**：在该仓库的 README 或 Docs 中下载轻量级的预训练权重（推荐使用参数量极小的 `yolov8n.pt` 或类似规格的模型），也可以使用该框架自行训练得到特定场景的 `.pt` 权重。
+* **说明**：在该仓库的 README 或 Docs 中下载轻量级的预训练权重（本项目使用的是官方预训练的yolo26n.pt），也可以使用该框架自行训练得到特定场景的 `.pt` 权重。
 
 ### 2. 导出为中间件格式 (.onnx)
 利用 Ultralytics 自带的导出功能，将 PyTorch 模型转化为通用的 ONNX 结构。在 Python 环境中执行以下命令（建议开启 `simplify` 消除冗余算子）：
